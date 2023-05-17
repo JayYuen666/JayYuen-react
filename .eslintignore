@@ -1,0 +1,12 @@
+!.*.js
+~*
+typings
+es/**/*
+lib/**/*
+locale
+server
+node_modules
+.eslintcache
+dist
+coverage
+**/*.d.ts
