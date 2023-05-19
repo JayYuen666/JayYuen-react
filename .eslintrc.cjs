@@ -1,5 +1,6 @@
 module.exports = {
-  env: { browser: true, node: true, es2020: true },
+  root: true,
+  env: { browser: true, commonjs: false, node: true, es2020: true },
   extends: [
     '@unocss',
     'eslint:recommended',

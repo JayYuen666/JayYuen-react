@@ -1,0 +1,86 @@
+{
+  "git": {
+    "commitMessage": "chore(release): v${version}",
+    "tagAnnotation": "Release v${version}",
+    "tagName": "v${version}",
+    "push": true,
+    "commit": true,
+    "tag": true,
+    "requireCommits": false,
+    "requireCleanWorkingDir": false,
+    "requireBranch": false,
+    "requireUpstream": true,
+    "requireCommitsFail": true,
+    "addUntrackedFiles": false,
+    "pushArgs": [
+      "--follow-tags"
+    ],
+    "pushRepo": ""
+  },
+  "npm": {
+    "publish": true,
+    "publishPath": ".",
+    "versionArgs": ["--allow-same-version", "--workspaces-update=false"],
+    "publishArgs": ["--include-workspace-root"],
+    "timeout": 10
+  },
+  "github": {
+    "release": true,
+    "releaseName": "Release ${version}",
+    "autoGenerate": false,
+    "tokenRef": "GITHUB_AUTH",
+    "timeout": 0,
+    "draft": true,
+    "comments": {
+      "submit": false,
+      "issue": ":rocket: _This issue has been resolved in v${version}. See [${releaseName}](${releaseUrl}) for release notes._",
+      "pr": ":rocket: _This pull request is included in v${version}. See [${releaseName}](${releaseUrl}) for release notes._"
+    }
+  },
+  "hooks": {
+    "after:bump": "echo 更新版本成功",
+    "before:release": "npm run release:changelog:fix",
+    "after:release": "echo Successfully released ${name} v${version} to ${repo.repository}."
+  },
+  "plugins": {
+    "@release-it/conventional-changelog": {
+      "preset": "angular",
+      "infile": "CHANGELOG.md",
+      "header": "# Changelog",
+      "types": [
+        {
+          "type": "feat",
+          "section": "Features"
+        },
+        {
+          "type": "fix",
+          "section": "Bug Fixes"
+        },
+        {
+          "type": "chore",
+          "hidden": true
+        },
+        {
+          "type": "docs",
+          "hidden": true
+        },
+        {
+          "type": "style",
+          "hidden": true
+        },
+        {
+          "type": "refactor",
+          "hidden": true
+        },
+        {
+          "type": "perf",
+          "hidden": true
+        },
+        {
+          "type": "test",
+          "hidden": true
+        }
+      ]
+    }
+  }
+}

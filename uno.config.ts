@@ -1,14 +1,14 @@
 import {
   defineConfig, presetAttributify, presetIcons,
   presetTypography, presetUno,
-  transformerDirectives, transformerVariantGroup
+  transformerDirectives, transformerVariantGroup,
 } from 'unocss'
 
 export default defineConfig({
   theme: {
     colors: {
       // ...
-    }
+    },
   },
   presets: [
     presetUno(),
@@ -20,10 +20,10 @@ export default defineConfig({
         'vertical-align': 'middle',
       },
       collections: {
-        carbon: () => import('@iconify-json/svg-spinners/icons.json').then(i => i.default)
-      }
+        carbon: () => import('@iconify-json/svg-spinners/icons.json').then(i => i.default),
+      },
     }),
-    presetTypography()
+    presetTypography(),
   ],
   transformers: [
     transformerDirectives(),
