@@ -5,23 +5,22 @@ module.exports = {
     '@unocss',
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
-    'plugin:react-hooks/recommended',
+    'plugin:react-hooks/recommended'
   ],
   settings: {
     react: {
-      version: 'detect',
+      version: 'detect'
     },
     polyfills: ['Promise', 'URL'],
     'import/resolver': {
-      typescript: {},
-    },
+      typescript: {}
+    }
   },
   parser: '@typescript-eslint/parser',
   parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
   plugins: ['react', '@typescript-eslint', 'react-hooks', 'react-refresh'],
   rules: {
     'react-refresh/only-export-components': 'warn',
-    'comma-dangle': ['error', 'always-multiline'],
     'consistent-return': 0, // TODO: remove later
     'no-param-reassign': 0, // TODO: remove later
     'no-underscore-dangle': 0,
@@ -155,7 +154,8 @@ module.exports = {
     'no-unused-vars': 'error',
     'space-before-function-paren': 'off',
     'no-console': 'off',
+    'comma-dangle': ['error', 'never'],
     quotes: ['error', 'single'],
-    'no-new': 'off',
-  },
+    'no-new': 'off'
+  }
 }
