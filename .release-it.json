@@ -47,14 +47,16 @@
       "preset": "angular",
       "infile": "CHANGELOG.md",
       "header": "# Changelog",
+      "ignoreRecommendedBump": true,
+      "strictSemVer": true,
       "types": [
         {
           "type": "feat",
-          "section": "Features"
+          "section": "✨新功能"
         },
         {
           "type": "fix",
-          "section": "Bug Fixes"
+          "section": "🐛问题修复"
         },
         {
           "type": "chore",
@@ -62,11 +64,11 @@
         },
         {
           "type": "docs",
-          "hidden": true
+          "section": "📝文档"
         },
         {
           "type": "style",
-          "hidden": true
+          "section": "🎨样式"
         },
         {
           "type": "refactor",
