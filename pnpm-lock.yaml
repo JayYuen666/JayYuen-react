@@ -87,6 +87,9 @@ devDependencies:
   release-it:
     specifier: ^15.10.3
     version: 15.10.3(typescript@5.0.2)
+  string-replace-async:
+    specifier: ^3.0.2
+    version: 3.0.2
   typescript:
     specifier: ^5.0.2
     version: 5.0.2
@@ -5765,6 +5768,11 @@ packages:
   /string-argv@0.3.2:
     resolution: {integrity: sha512-aqD2Q0144Z+/RqG52NeHEkZauTAUWJO8c6yTftGJKO3Tja5tUgIfmIl6kExvhtxSDP7fXB6DvzkfMpCd/F3G+Q==}
     engines: {node: '>=0.6.19'}
+    dev: true
+
+  /string-replace-async@3.0.2:
+    resolution: {integrity: sha512-s6hDtXJ7FKyRap/amefqrOMpkEQvxUDueyvJygQeHxCK5Za90dOMgdibCCrPdfdAYAkr8imrZ1PPXW7DOf0RzQ==}
+    engines: {node: '>= 14.0.0'}
     dev: true
 
   /string-width@4.2.3:
