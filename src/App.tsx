@@ -1,7 +1,7 @@
 function App() {
   return (
     <>
-      <div className="i-svg-spinners-180-ring" />
+      无
     </>
   )
 }
