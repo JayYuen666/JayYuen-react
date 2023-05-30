@@ -1,4 +1,5 @@
 import { isNil } from 'lodash-es'
+import { Nullable, Arrayable } from './types'
 /**
  * 返回传入值的保留小数值
  * @remarks
@@ -22,7 +23,7 @@ import { isNil } from 'lodash-es'
  * => ''
  * ```
  */
-function roundToFixed(value: string | number, precision = 2) {
+function roundToFixed(value: any, precision = 2) {
   if (Number.isNaN(value as number) || value === '' || isNil(value)) {
     return value as string
   }
@@ -31,7 +32,150 @@ function roundToFixed(value: string | number, precision = 2) {
   }
   return ((Math.round((+`${value}e${precision}`) * -1) / Math.pow(10, precision)) * -1).toFixed(precision);
 }
+/**
+ * 将 `Arrayable<T>` 转换为 `Array<T>`
+ * @category Array
+ * @param array  Nullable<Arrayable<T>>
+ * @returns Array<T>
+ */
+function toArray<T>(array?: Nullable<Arrayable<T>>): Array<T> {
+  array = array ?? []
+  return Array.isArray(array) ? array : [array]
+}
+
+/**
+ * 数组去重
+ * @category Array
+ * @param array readonly T[]
+ * @returns T[]
+ */
+function uniq<T>(array: readonly T[]): T[] {
+  return Array.from(new Set(array))
+}
+
+/**
+ * 从数组中获取随机项
+ * @category Array
+ * @param arr T[]
+ * @param quantity number
+ * @returns T[]
+ */
+function sample<T>(arr: T[], quantity: number) {
+  return Array.from({ length: quantity }, () => arr[Math.round(Math.random() * (arr.length - 1))])
+}
+
+/**
+ * 移动数组中的元素
+ * @category Array
+ * @param arr
+ * @param from
+ * @param to
+ */
+function move<T>(arr: T[], from: number, to: number) {
+  arr.splice(to, 0, arr.splice(from, 1)[0])
+  return arr
+}
+
+const toString = (v: any) => Object.prototype.toString.call(v)
+
+/**
+ * 获取数据类型名称
+ * @param v any
+ * @returns string
+ */
+function getTypeName(v: any) {
+  if (v === null) {
+    return 'null'
+  }
+  const type = toString(v).slice(8, -1).toLowerCase()
+  return (typeof v === 'object' || typeof v === 'function') ? type : typeof v
+}
+
+/**
+ * 判断两个值是否相等
+ * @param value1 any
+ * @param value2 any
+ * @returns boolean
+ */
+function isDeepEqual(value1: any, value2: any): boolean {
+  const type1 = getTypeName(value1)
+  const type2 = getTypeName(value2)
+  if (type1 !== type2) {
+    return false
+  }
+
+  if (type1 === 'array') {
+    if (value1.length !== value2.length) {
+      return false
+    }
+
+    return value1.every((item: any, i: number) => {
+      return isDeepEqual(item, value2[i])
+    })
+  }
+  if (type1 === 'object') {
+    const keyArr = Object.keys(value1)
+    if (keyArr.length !== Object.keys(value2).length) {
+      return false
+    }
+
+    return keyArr.every((key: string) => {
+      return isDeepEqual(value1[key], value2[key])
+    })
+  }
+  return Object.is(value1, value2)
+}
+/**
+ * 判断是否没有值
+ * @param val
+ * @returns boolean
+ */
+const isDef = <T = any>(val?: T): val is T => typeof val !== 'undefined'
+const isBoolean = (val: any): val is boolean => typeof val === 'boolean'
+const isFunction = <T extends Function>(val: any): val is T => typeof val === 'function'
+const isNumber = (val: any): val is number => typeof val === 'number'
+const isString = (val: unknown): val is string => typeof val === 'string'
+const isObject = (val: any): val is object => toString(val) === '[object Object]'
+const isUndefined = (val: any): val is undefined => toString(val) === '[object Undefined]'
+const isNull = (val: any): val is null => toString(val) === '[object Null]'
+const isRegExp = (val: any): val is RegExp => toString(val) === '[object RegExp]'
+const isDate = (val: any): val is Date => toString(val) === '[object Date]'
+const isWindow = (val: any): boolean => typeof window !== 'undefined' && toString(val) === '[object Window]'
+const isBrowser = typeof window !== 'undefined'
+
+/**
+ * 确定对象是否具有具有指定名称的属性
+ * @param obj
+ * @param v
+ * @returns
+ */
+function hasOwnProperty<T>(obj: T, v: PropertyKey) {
+  if (isNull(obj)) {
+    return false
+  }
+  return Object.prototype.hasOwnProperty.call(obj, v)
+}
 
 export {
-  roundToFixed
+  roundToFixed,
+  toArray,
+  uniq,
+  sample,
+  move,
+  toString,
+  getTypeName,
+  isDeepEqual,
+  isDef,
+  isBoolean,
+  isFunction,
+  isNumber,
+  isString,
+  isObject,
+  isUndefined,
+  isNull,
+  isRegExp,
+  isDate,
+  isWindow,
+  isBrowser,
+  hasOwnProperty
 }
