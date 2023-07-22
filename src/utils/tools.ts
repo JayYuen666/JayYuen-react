@@ -241,7 +241,7 @@ function getCurrentDate(needTime = false) {
 /**
   *
   */
-const accAdd = (arg1: number, arg2: number) => {
+const accAdd = (arg1: number, arg2: number | string) => {
   let r1, r2;
   try {
     r1 = arg1.toString().split('.')[1].length;
@@ -253,10 +253,40 @@ const accAdd = (arg1: number, arg2: number) => {
   } catch (e) {
     r2 = 0;
   }
+  const c = Math.abs(r1 - r2);
   const m = Math.pow(10, Math.max(r1, r2));
-  return (arg1 * m + arg2 * m) / m;
+  if (c > 0) {
+    const cm = Math.pow(10, c);
+    if (r1 > r2) {
+      arg1 = +arg1.toString().replace('.', '');
+      arg2 = (+arg2.toString().replace('.', '')) * cm;
+    } else {
+      arg1 = (+arg1.toString().replace('.', '')) * cm;
+      arg2 = +arg2.toString().replace('.', '');
+    }
+  } else {
+    arg1 = +arg1.toString().replace('.', '');
+    arg2 = +arg2.toString().replace('.', '');
+  }
+  return (arg1 + arg2) / m;
 };
-const accMul = (arg1: number, arg2: number) => {
+const accSub = (arg1: number, arg2: number | string) => {
+  let r1, r2;
+  try {
+    r1 = arg1.toString().split('.')[1].length;
+  } catch (e) {
+    r1 = 0;
+  }
+  try {
+    r2 = arg2.toString().split('.')[1].length;
+  } catch (e) {
+    r2 = 0;
+  }
+  const m = Math.pow(10, Math.max(r1, r2)); // last modify by deeka //动态控制精度长度
+  const n = (r1 >= r2) ? r1 : r2;
+  return +((((+arg1) * m - (+arg2) * m) / m).toFixed(n));
+}
+const accMul = (arg1: number, arg2: number | string) => {
   let m = 0;
   const s1 = arg1.toString();
   const s2 = arg2.toString();
@@ -266,9 +296,9 @@ const accMul = (arg1: number, arg2: number) => {
   try {
     m += s2.split('.')[1].length;
   } catch (e) { /* empty */ }
-  return Number(s1.replace('.', '')) * Number(s2.replace('.', '')) / Math.pow(10, m);
+  return (+s1.replace('.', '')) * (+s2.replace('.', '')) / Math.pow(10, m);
 };
-const accDiv = (arg1: number, arg2: number) => {
+const accDiv = (arg1: number, arg2: number | string) => {
   const s1 = arg1.toString();
   const s2 = arg2.toString();
   let t1 = 0;
@@ -281,7 +311,7 @@ const accDiv = (arg1: number, arg2: number) => {
   } catch (e) { /* empty */ }
   const r1 = Number(s1.replace('.', ''));
   const r2 = Number(s2.replace('.', ''));
-  return (r1 / r2) * Math.pow(10, t2 - t1);
+  return accMul((r1 / r2), Math.pow(10, t2 - t1));
 };
 /**
  * 加减乘除运算
@@ -291,7 +321,7 @@ const calcFn = {
     return args.reduce((total, num) => accAdd(total, num));
   },
   sub(...args: number[]) {
-    return args.reduce((total, num) => accAdd(total, num * -1));
+    return args.reduce((total, num) => accSub(total, num));
   },
   mul(...args: number[]) {
     return args.reduce((total, num) => accMul(total, num));
