@@ -314,19 +314,37 @@ const accDiv = (arg1: number, arg2: number | string) => {
   return accMul((r1 / r2), Math.pow(10, t2 - t1));
 };
 /**
+ * 检查数据是否符合加减乘除的要求
+ * @param list 任何数字
+ * @returns boolean
+ */
+const isNoSafe = (list: any[]) => list.some(item => Number.isNaN(+item))
+/**
  * 加减乘除运算
  */
 const calcFn = {
-  add(...args: number[]) {
+  add(...args: any[]) {
+    if (isNoSafe(args)) {
+      return '请输入正确的数据类型！'
+    }
     return args.reduce((total, num) => accAdd(total, num));
   },
-  sub(...args: number[]) {
+  sub(...args: any[]) {
+    if (isNoSafe(args)) {
+      return '请输入正确的数据类型！'
+    }
     return args.reduce((total, num) => accSub(total, num));
   },
-  mul(...args: number[]) {
+  mul(...args: any[]) {
+    if (isNoSafe(args)) {
+      return '请输入正确的数据类型！'
+    }
     return args.reduce((total, num) => accMul(total, num));
   },
-  div(...args: number[]) {
+  div(...args: any[]) {
+    if (isNoSafe(args)) {
+      return '请输入正确的数据类型！'
+    }
     return args.reduce((total, num) => accDiv(total, num));
   }
 };
