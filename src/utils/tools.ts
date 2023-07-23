@@ -258,15 +258,15 @@ const accAdd = (arg1: number, arg2: number | string) => {
   if (c > 0) {
     const cm = Math.pow(10, c);
     if (r1 > r2) {
-      arg1 = +arg1.toString().replace('.', '');
-      arg2 = (+arg2.toString().replace('.', '')) * cm;
+      arg1 = Number(arg1.toString().replace('.', ''));
+      arg2 = Number(arg2.toString().replace('.', '')) * cm;
     } else {
-      arg1 = (+arg1.toString().replace('.', '')) * cm;
-      arg2 = +arg2.toString().replace('.', '');
+      arg1 = Number(arg1.toString().replace('.', '')) * cm;
+      arg2 = Number(arg2.toString().replace('.', ''));
     }
   } else {
-    arg1 = +arg1.toString().replace('.', '');
-    arg2 = +arg2.toString().replace('.', '');
+    arg1 = Number(arg1.toString().replace('.', ''));
+    arg2 = Number(arg2.toString().replace('.', ''));
   }
   return (arg1 + arg2) / m;
 };
@@ -284,7 +284,7 @@ const accSub = (arg1: number, arg2: number | string) => {
   }
   const m = Math.pow(10, Math.max(r1, r2)); // last modify by deeka //动态控制精度长度
   const n = (r1 >= r2) ? r1 : r2;
-  return +((((+arg1) * m - (+arg2) * m) / m).toFixed(n));
+  return Number((((+arg1) * m - (+arg2) * m) / m).toFixed(n));
 }
 const accMul = (arg1: number, arg2: number | string) => {
   let m = 0;
@@ -296,7 +296,7 @@ const accMul = (arg1: number, arg2: number | string) => {
   try {
     m += s2.split('.')[1].length;
   } catch (e) { /* empty */ }
-  return (+s1.replace('.', '')) * (+s2.replace('.', '')) / Math.pow(10, m);
+  return Number(s1.replace('.', '')) * Number(s2.replace('.', '')) / Math.pow(10, m);
 };
 const accDiv = (arg1: number, arg2: number | string) => {
   const s1 = arg1.toString();
@@ -318,7 +318,7 @@ const accDiv = (arg1: number, arg2: number | string) => {
  * @param list 任何数字
  * @returns boolean
  */
-const isNoSafe = (list: any[]) => list.some(item => Number.isNaN(+item))
+const isNoSafe = (list: any[]) => list.some(item => Number.isNaN(Number(item)))
 /**
  * 加减乘除运算
  */
