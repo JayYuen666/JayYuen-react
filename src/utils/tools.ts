@@ -381,6 +381,40 @@ function filterParams(obj: { [x: string]: any; }) {
   }
   return _newPar;
 }
+// 上面代码17行中的getPadding函数
+const getPadding = (el: HTMLElement) => {
+  const style = window.getComputedStyle(el, null)
+  const paddingLeft = Number.parseInt(style.paddingLeft, 10) || 0
+  const paddingRight = Number.parseInt(style.paddingRight, 10) || 0
+  const paddingTop = Number.parseInt(style.paddingTop, 10) || 0
+  const paddingBottom = Number.parseInt(style.paddingBottom, 10) || 0
+  return {
+    left: paddingLeft,
+    right: paddingRight,
+    top: paddingTop,
+    bottom: paddingBottom
+  }
+}
+
+function checkEllipsis(box: HTMLElement) {
+  const range = document.createRange();
+  range.setStart(box, 0)
+  range.setEnd(box, box.childNodes.length)
+  let rangeWidth = range.getBoundingClientRect().width
+  let rangeHeight = range.getBoundingClientRect().height
+  const offsetWidth = rangeWidth - Math.floor(rangeWidth)
+  if (offsetWidth < 0.001) {
+    rangeWidth = Math.floor(rangeWidth)
+  }
+  const offsetHeight = rangeHeight - Math.floor(rangeHeight)
+  if (offsetHeight < 0.001) {
+    rangeHeight = Math.floor(rangeHeight)
+  }
+  const { left, right, top, bottom } = getPadding(box)
+  const horizontalPadding = left + right
+  const verticalPadding = top + bottom
+  return (rangeWidth + horizontalPadding > box.clientWidth) || (rangeHeight + verticalPadding > box.offsetHeight) || (box.scrollWidth > box.offsetWidth)
+}
 
 export {
   roundToFixed,
@@ -408,5 +442,6 @@ export {
   getCurrentDate,
   calcFn,
   uniqueArrayObject,
-  filterParams
+  filterParams,
+  checkEllipsis
 }
