@@ -454,6 +454,32 @@ function getUrlParams(key: string) {
   return value ?? '暂无此参数'
 }
 
+/**
+ * 对输入框限制输入正数的金额
+ * @param value 输入的值
+ * @returns 过滤后的值
+ */
+function priceInput(value: string) {
+  value = value.replace(/[^\d.]/g, '')
+  value = value.replace(/^\./g, '')
+  value = value.replace(/\.{2,}/g, '.')
+  value = value.replace('.', '$#$').replace(/\./g, '').replace('$#$', '.')
+  value = value.replace(/^(-2-)*(\d+)\.(\d\d).*$/, '$1$2.$3')
+  if (value.indexOf('.') < 0 && value !== '') {
+    if (value.substring(0, 1) === '0' && value.length === 2) {
+      value = parseFloat(value).toString()
+    }
+  } else {
+    const val = value
+    const beforePoint = val.split('.')[0]
+    const afterPoint = val.split('.')[1]
+    if (beforePoint.length >= 2 && Number(beforePoint[0]) === 0) {
+      value = `${beforePoint.substring(1)}.${afterPoint}`
+    }
+  }
+  return value
+}
+
 export {
   roundToFixed,
   toArray,
@@ -484,5 +510,6 @@ export {
   checkEllipsis,
   urlParams,
   urlParamsReg,
-  getUrlParams
+  getUrlParams,
+  priceInput
 }
