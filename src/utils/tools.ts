@@ -176,6 +176,9 @@ function deepClone(value: any, weakMap: any = new WeakMap()) {
   if (isDate(value)) {
     return new Date(value.valueOf())
   }
+  if (isRegExp(value)) {
+    return new RegExp(value)
+  }
   if (isSymbol(value)) {
     return Symbol(value.description)
   }
@@ -203,12 +206,11 @@ function deepClone(value: any, weakMap: any = new WeakMap()) {
     }
     return newArr
   }
-  if (!(isObject(value))) {
+  if (!(isObject(value)) || isNull(value)) {
     return value
   }
   const newObj: any = isArray(value) ? [] : {}
   weakMap.set(value, newObj)
-
   for (const key in value) {
     if (isArray(value[key])) {
       deepClone(value[key], weakMap);
@@ -381,21 +383,12 @@ function filterParams(obj: { [x: string]: any; }) {
   }
   return _newPar;
 }
-// 上面代码17行中的getPadding函数
-const getPadding = (el: HTMLElement) => {
-  const style = window.getComputedStyle(el, null)
-  const paddingLeft = Number.parseInt(style.paddingLeft, 10) || 0
-  const paddingRight = Number.parseInt(style.paddingRight, 10) || 0
-  const paddingTop = Number.parseInt(style.paddingTop, 10) || 0
-  const paddingBottom = Number.parseInt(style.paddingBottom, 10) || 0
-  return {
-    left: paddingLeft,
-    right: paddingRight,
-    top: paddingTop,
-    bottom: paddingBottom
-  }
-}
 
+/**
+ * 判断是否超出给定的宽高
+ * @param box 判断的标签元素
+ * @returns
+ */
 function checkEllipsis(box: HTMLElement) {
   const range = document.createRange();
   range.setStart(box, 0)
@@ -406,14 +399,59 @@ function checkEllipsis(box: HTMLElement) {
   if (offsetWidth < 0.001) {
     rangeWidth = Math.floor(rangeWidth)
   }
+  const style = window.getComputedStyle(box, null)
+  const left = Number.parseInt(style.paddingLeft, 10) || 0
+  const right = Number.parseInt(style.paddingRight, 10) || 0
+  const top = Number.parseInt(style.paddingTop, 10) || 0
+  const bottom = Number.parseInt(style.paddingBottom, 10) || 0
   const offsetHeight = rangeHeight - Math.floor(rangeHeight)
   if (offsetHeight < 0.001) {
     rangeHeight = Math.floor(rangeHeight)
   }
-  const { left, right, top, bottom } = getPadding(box)
   const horizontalPadding = left + right
   const verticalPadding = top + bottom
-  return (rangeWidth + horizontalPadding > box.clientWidth) || (rangeHeight + verticalPadding > box.offsetHeight) || (box.scrollWidth > box.offsetWidth)
+  return (rangeWidth + horizontalPadding > box.offsetWidth) || (rangeHeight + verticalPadding > box.offsetHeight) || (box.scrollWidth > box.offsetWidth)
+}
+
+/**
+ * 获取URL中的参数
+ * @returns
+ */
+function urlParams() {
+  const params: {
+    [key: string]: any
+  } = {};
+  const query = window.location.search.substring(1);
+  const vars = query.split('&');
+  for (let i = 0; i < vars.length; i++) {
+    const pair: string[] = vars[i].split('=');
+    params[pair[0]] = decodeURIComponent(pair[1]);
+  }
+  return params
+}
+
+function urlParamsReg() {
+  const url = window.location.href;
+  const regex = /[?&]([^=#]+)=([^&#]*)/g;
+  const params: {
+    [key: string]: any
+  } = {};
+  let match;
+  while ((match = regex.exec(url)) !== null) {
+    params[match[1]] = decodeURIComponent(match[2]);
+  }
+  return params
+}
+
+/**
+ * 查询URL中的参数
+ * @param key 查询的key
+ * @returns 对应的值
+ */
+function getUrlParams(key: string) {
+  const params = new URLSearchParams(window.location.search);
+  const value = params.get(key)
+  return value ?? '暂无此参数'
 }
 
 export {
@@ -443,5 +481,8 @@ export {
   calcFn,
   uniqueArrayObject,
   filterParams,
-  checkEllipsis
+  checkEllipsis,
+  urlParams,
+  urlParamsReg,
+  getUrlParams
 }
