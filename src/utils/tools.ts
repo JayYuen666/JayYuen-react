@@ -29,9 +29,11 @@ function roundToFixed(value: any, precision = 2) {
     return value as string
   }
   if (+value >= 0) {
-    return (Math.round(+`${value}e${precision}`) / Math.pow(10, precision)).toFixed(precision);
+    return (Math.round(+`${value}e${precision}`) / Math.pow(10, precision)).toFixed(precision)
   }
-  return ((Math.round((+`${value}e${precision}`) * -1) / Math.pow(10, precision)) * -1).toFixed(precision);
+  return ((Math.round(+`${value}e${precision}` * -1) / Math.pow(10, precision)) * -1).toFixed(
+    precision
+  )
 }
 /**
  * 将 `Arrayable<T>` 转换为 `Array<T>`
@@ -89,7 +91,7 @@ function getTypeName(v: any) {
     return 'null'
   }
   const type = toString(v).slice(8, -1).toLowerCase()
-  return (typeof v === 'object' || typeof v === 'function') ? type : typeof v
+  return typeof v === 'object' || typeof v === 'function' ? type : typeof v
 }
 
 /**
@@ -145,7 +147,8 @@ const isDate = (val: any): val is Date => toString(val) === '[object Date]'
 const isSet = (val: any): boolean => toString(val) === '[object Set]'
 const isSymbol = (val: any): val is Symbol => toString(val) === '[object Symbol]'
 const isMap = (val: any) => toString(val) === '[object Map]'
-const isWindow = (val: any): boolean => typeof window !== 'undefined' && toString(val) === '[object Window]'
+const isWindow = (val: any): boolean =>
+  typeof window !== 'undefined' && toString(val) === '[object Window]'
 const isBrowser = typeof window !== 'undefined'
 
 /**
@@ -200,20 +203,20 @@ function deepClone(value: any, weakMap: any = new WeakMap()) {
     return weakMap.get(value)
   }
   if (isArray(value)) {
-    const newArr: any[] = [];
+    const newArr: any[] = []
     for (const item in value) {
-      newArr[item] = deepClone(value[item], weakMap);
+      newArr[item] = deepClone(value[item], weakMap)
     }
     return newArr
   }
-  if (!(isObject(value)) || isNull(value)) {
+  if (!isObject(value) || isNull(value)) {
     return value
   }
   const newObj: any = isArray(value) ? [] : {}
   weakMap.set(value, newObj)
   for (const key in value) {
     if (isArray(value[key])) {
-      deepClone(value[key], weakMap);
+      deepClone(value[key], weakMap)
     }
     weakMap.set(value, newObj)
     newObj[key] = deepClone(value[key], weakMap)
@@ -230,97 +233,105 @@ function deepClone(value: any, weakMap: any = new WeakMap()) {
  * @returns
  */
 function getCurrentDate(needTime = false) {
-  const d = new Date();
-  let month: string | number = d.getMonth() + 1;
-  month = month < 10 ? `0${month}` : month;
-  const date = `${d.getFullYear()}-${month}-${d.getDate()}`;
-  const time = `${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`;
+  const d = new Date()
+  let month: string | number = d.getMonth() + 1
+  month = month < 10 ? `0${month}` : month
+  const date = `${d.getFullYear()}-${month}-${d.getDate()}`
+  const time = `${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`
   if (needTime) {
-    return [date, time].join(' ');
+    return [date, time].join(' ')
   }
-  return date;
+  return date
 }
 /**
-  *
-  */
+ *
+ */
 const accAdd = (arg1: number, arg2: number | string) => {
-  let r1, r2;
+  let r1, r2
   try {
-    r1 = arg1.toString().split('.')[1].length;
+    r1 = arg1.toString().split('.')[1].length
   } catch (e) {
-    r1 = 0;
+    r1 = 0
   }
   try {
-    r2 = arg2.toString().split('.')[1].length;
+    r2 = arg2.toString().split('.')[1].length
   } catch (e) {
-    r2 = 0;
+    r2 = 0
   }
-  const c = Math.abs(r1 - r2);
-  const m = Math.pow(10, Math.max(r1, r2));
+  const c = Math.abs(r1 - r2)
+  const m = Math.pow(10, Math.max(r1, r2))
   if (c > 0) {
-    const cm = Math.pow(10, c);
+    const cm = Math.pow(10, c)
     if (r1 > r2) {
-      arg1 = Number(arg1.toString().replace('.', ''));
-      arg2 = Number(arg2.toString().replace('.', '')) * cm;
+      arg1 = Number(arg1.toString().replace('.', ''))
+      arg2 = Number(arg2.toString().replace('.', '')) * cm
     } else {
-      arg1 = Number(arg1.toString().replace('.', '')) * cm;
-      arg2 = Number(arg2.toString().replace('.', ''));
+      arg1 = Number(arg1.toString().replace('.', '')) * cm
+      arg2 = Number(arg2.toString().replace('.', ''))
     }
   } else {
-    arg1 = Number(arg1.toString().replace('.', ''));
-    arg2 = Number(arg2.toString().replace('.', ''));
+    arg1 = Number(arg1.toString().replace('.', ''))
+    arg2 = Number(arg2.toString().replace('.', ''))
   }
-  return (arg1 + arg2) / m;
-};
+  return (arg1 + arg2) / m
+}
 const accSub = (arg1: number, arg2: number | string) => {
-  let r1, r2;
+  let r1, r2
   try {
-    r1 = arg1.toString().split('.')[1].length;
+    r1 = arg1.toString().split('.')[1].length
   } catch (e) {
-    r1 = 0;
+    r1 = 0
   }
   try {
-    r2 = arg2.toString().split('.')[1].length;
+    r2 = arg2.toString().split('.')[1].length
   } catch (e) {
-    r2 = 0;
+    r2 = 0
   }
-  const m = Math.pow(10, Math.max(r1, r2)); // last modify by deeka //动态控制精度长度
-  const n = (r1 >= r2) ? r1 : r2;
-  return Number((((+arg1) * m - (+arg2) * m) / m).toFixed(n));
+  const m = Math.pow(10, Math.max(r1, r2)) // last modify by deeka //动态控制精度长度
+  const n = r1 >= r2 ? r1 : r2
+  return Number(((+arg1 * m - +arg2 * m) / m).toFixed(n))
 }
 const accMul = (arg1: number, arg2: number | string) => {
-  let m = 0;
-  const s1 = arg1.toString();
-  const s2 = arg2.toString();
+  let m = 0
+  const s1 = arg1.toString()
+  const s2 = arg2.toString()
   try {
-    m += s1.split('.')[1].length;
-  } catch (e) { /* empty */ }
+    m += s1.split('.')[1].length
+  } catch (e) {
+    /* empty */
+  }
   try {
-    m += s2.split('.')[1].length;
-  } catch (e) { /* empty */ }
-  return Number(s1.replace('.', '')) * Number(s2.replace('.', '')) / Math.pow(10, m);
-};
+    m += s2.split('.')[1].length
+  } catch (e) {
+    /* empty */
+  }
+  return (Number(s1.replace('.', '')) * Number(s2.replace('.', ''))) / Math.pow(10, m)
+}
 const accDiv = (arg1: number, arg2: number | string) => {
-  const s1 = arg1.toString();
-  const s2 = arg2.toString();
-  let t1 = 0;
-  let t2 = 0;
+  const s1 = arg1.toString()
+  const s2 = arg2.toString()
+  let t1 = 0
+  let t2 = 0
   try {
-    t1 = s1.split('.')[1].length;
-  } catch (e) { /* empty */ }
+    t1 = s1.split('.')[1].length
+  } catch (e) {
+    /* empty */
+  }
   try {
-    t2 = s2.split('.')[1].length;
-  } catch (e) { /* empty */ }
-  const r1 = Number(s1.replace('.', ''));
-  const r2 = Number(s2.replace('.', ''));
-  return accMul((r1 / r2), Math.pow(10, t2 - t1));
-};
+    t2 = s2.split('.')[1].length
+  } catch (e) {
+    /* empty */
+  }
+  const r1 = Number(s1.replace('.', ''))
+  const r2 = Number(s2.replace('.', ''))
+  return accMul(r1 / r2, Math.pow(10, t2 - t1))
+}
 /**
  * 检查数据是否符合加减乘除的要求
  * @param list 任何数字
  * @returns boolean
  */
-const isNoSafe = (list: any[]) => list.some(item => Number.isNaN(Number(item)))
+const isNoSafe = (list: any[]) => list.some((item) => Number.isNaN(Number(item)))
 /**
  * 加减乘除运算
  */
@@ -329,27 +340,27 @@ const calcFn = {
     if (isNoSafe(args)) {
       return '请输入正确的数据类型！'
     }
-    return args.reduce((total, num) => accAdd(total, num));
+    return args.reduce((total, num) => accAdd(total, num))
   },
   sub(...args: any[]) {
     if (isNoSafe(args)) {
       return '请输入正确的数据类型！'
     }
-    return args.reduce((total, num) => accSub(total, num));
+    return args.reduce((total, num) => accSub(total, num))
   },
   mul(...args: any[]) {
     if (isNoSafe(args)) {
       return '请输入正确的数据类型！'
     }
-    return args.reduce((total, num) => accMul(total, num));
+    return args.reduce((total, num) => accMul(total, num))
   },
   div(...args: any[]) {
     if (isNoSafe(args)) {
       return '请输入正确的数据类型！'
     }
-    return args.reduce((total, num) => accDiv(total, num));
+    return args.reduce((total, num) => accDiv(total, num))
   }
-};
+}
 
 /**
  * 数组对象根据某属性去重
@@ -360,7 +371,7 @@ const calcFn = {
 function uniqueArrayObject(array: { [key: string]: any }[], key: string) {
   const map = new Map()
   const result: { [key: string]: any }[] = []
-  array.forEach(item => {
+  array.forEach((item) => {
     if (!map.has(item[key])) {
       map.set(item[key], true)
       result.push(item)
@@ -374,14 +385,17 @@ function uniqueArrayObject(array: { [key: string]: any }[], key: string) {
  * @param obj
  * @returns
  */
-function filterParams(obj: { [x: string]: any; }) {
-  const _newPar: { [x: string]: any; } = {};
+function filterParams(obj: { [x: string]: any }) {
+  const _newPar: { [x: string]: any } = {}
   for (const key in obj) {
-    if (([0, false].includes(obj[key]) || obj[key]) && obj[key].toString().replace(/(^\s*)|(\s*$)/g, '') !== '') {
-      _newPar[key] = obj[key];
+    if (
+      ([0, false].includes(obj[key]) || obj[key]) &&
+      obj[key].toString().replace(/(^\s*)|(\s*$)/g, '') !== ''
+    ) {
+      _newPar[key] = obj[key]
     }
   }
-  return _newPar;
+  return _newPar
 }
 
 /**
@@ -390,7 +404,7 @@ function filterParams(obj: { [x: string]: any; }) {
  * @returns
  */
 function checkEllipsis(box: HTMLElement) {
-  const range = document.createRange();
+  const range = document.createRange()
   range.setStart(box, 0)
   range.setEnd(box, box.childNodes.length)
   let rangeWidth = range.getBoundingClientRect().width
@@ -410,7 +424,11 @@ function checkEllipsis(box: HTMLElement) {
   }
   const horizontalPadding = left + right
   const verticalPadding = top + bottom
-  return (rangeWidth + horizontalPadding > box.offsetWidth) || (rangeHeight + verticalPadding > box.offsetHeight) || (box.scrollWidth > box.offsetWidth)
+  return (
+    rangeWidth + horizontalPadding > box.offsetWidth ||
+    rangeHeight + verticalPadding > box.offsetHeight ||
+    box.scrollWidth > box.offsetWidth
+  )
 }
 
 /**
@@ -420,25 +438,25 @@ function checkEllipsis(box: HTMLElement) {
 function urlParams() {
   const params: {
     [key: string]: any
-  } = {};
-  const query = window.location.search.substring(1);
-  const vars = query.split('&');
+  } = {}
+  const query = window.location.search.substring(1)
+  const vars = query.split('&')
   for (let i = 0; i < vars.length; i++) {
-    const pair: string[] = vars[i].split('=');
-    params[pair[0]] = decodeURIComponent(pair[1]);
+    const pair: string[] = vars[i].split('=')
+    params[pair[0]] = decodeURIComponent(pair[1])
   }
   return params
 }
 
 function urlParamsReg() {
-  const url = window.location.href;
-  const regex = /[?&]([^=#]+)=([^&#]*)/g;
+  const url = window.location.href
+  const regex = /[?&]([^=#]+)=([^&#]*)/g
   const params: {
     [key: string]: any
-  } = {};
-  let match;
+  } = {}
+  let match
   while ((match = regex.exec(url)) !== null) {
-    params[match[1]] = decodeURIComponent(match[2]);
+    params[match[1]] = decodeURIComponent(match[2])
   }
   return params
 }
@@ -449,7 +467,7 @@ function urlParamsReg() {
  * @returns 对应的值
  */
 function getUrlParams(key: string) {
-  const params = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams(window.location.search)
   const value = params.get(key)
   return value ?? '暂无此参数'
 }
